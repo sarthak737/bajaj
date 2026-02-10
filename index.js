@@ -85,11 +85,11 @@ app.post("/bfhl", async (req, res) => {
 
       try {
         const geminiResponse = await axios.post(
-          `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
           {
             contents: [
               {
-                parts: [{ text: body.AI }],
+                parts: [{ text: body.AI + " Answer in one word or the exact value only. Do not use full sentences." }],
               },
             ],
           },
@@ -98,7 +98,7 @@ app.post("/bfhl", async (req, res) => {
         const aiText =
           geminiResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-        result = aiText.trim().split(/\s+/)[0] || "Unknown";
+        result = aiText.trim() || "Unknown";
       } catch (err) {
         if (err.response?.status === 429) {
           return res.status(429).json({
